@@ -6,7 +6,8 @@ from .models import Priority, Task
 class TaskAdmin(admin.ModelAdmin):
     fieldsets=[
         ("General Information", {"fields":["title", "description"]}),
-        ("Date Information", {"fields":["due_date"]})
+        ("Date Information", {"fields":["due_date"]}),
+        ("Special Information", {"fields":["priorityLevel","is_completed"]})
     ]
     list_display=["title", "pub_date", "due_date","is_completed"]
     list_filter=["priorityLevel"]
