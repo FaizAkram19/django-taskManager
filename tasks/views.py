@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404
 from .models import Priority, Task
+from datetime import date
 
 
 # Create your views here.
@@ -28,4 +29,5 @@ def task_list(request):
         tasks=tasks.order_by(sort)
     
     # 5. pass to template via context
-    return render(request,'tasks/index.html',{'tasks':tasks})
+    context={"tasks":tasks} 
+    return render(request,'tasks/index.html', context)

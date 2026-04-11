@@ -21,5 +21,10 @@ class Task(models.Model):
     due_date=models.DateTimeField("Due Date")
     is_completed=models.BooleanField(default=False)
 
+    @property
+    def is_overdue(self):
+        from datetime import datetime
+        return self.due_date and self.due_date < datetime.now() 
+
     def __str__(self):
         return self.title
