@@ -1,7 +1,8 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from .models import Priority, Task
 from datetime import date
+from .forms import TaskForm
 
 
 # Create your views here.
@@ -31,3 +32,18 @@ def task_list(request):
     # 5. pass to template via context
     context={"tasks":tasks} 
     return render(request,'tasks/index.html', context)
+
+def add_task(request):
+    if request.method=='POST':
+        form=TaskForm(request.POST, request.FILES or None) #FILES looks for any files or images that were uploaded, they won't be uploaded without it
+
+        if form.is_valid():
+            form.save()
+            return redirect('index')# HTTP_REFERER points back to the page from where we came from.
+                                                                     # we gave index as a fallback so that if we arent able to fallback 
+                                                                     # to the last page, we can go back to the homepage.
+    else:
+        form=TaskForm() #if the request was GET, create an empty instance of the ModelForm
+    
+    return render(request, "tasks/taskform.html",{"form":form})
+

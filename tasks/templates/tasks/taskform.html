@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Task</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"/>
+  <style>
+    /* Flatpickr dark theme overrides */
+    .flatpickr-calendar {
+      background: #1a1a1a !important;
+      border: 1px solid #2e2e2e !important;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+    }
+    .flatpickr-months, .flatpickr-weekdays { background: #1a1a1a !important; }
+    .flatpickr-month { color: #e8e8e8 !important; fill: #e8e8e8 !important; }
+    .flatpickr-current-month input.cur-year,
+    .flatpickr-current-month .flatpickr-monthDropdown-months {
+      color: #e8e8e8 !important; font-family: 'IBM Plex Mono', monospace !important;
+    }
+    span.flatpickr-weekday { color: #666 !important; background: #1a1a1a !important; }
+    .flatpickr-day { color: #e8e8e8 !important; border-radius: 3px !important; }
+    .flatpickr-day:hover { background: #2e2e2e !important; border-color: #2e2e2e !important; }
+    .flatpickr-day.selected, .flatpickr-day.selected:hover {
+      background: #f0c040 !important; border-color: #f0c040 !important; color: #000 !important;
+    }
+    .flatpickr-day.today { border-color: #666 !important; }
+    .flatpickr-day.flatpickr-disabled { color: #333 !important; }
+    .flatpickr-time { background: #1a1a1a !important; border-top: 1px solid #2e2e2e !important; }
+    .flatpickr-time input, .flatpickr-time .flatpickr-am-pm {
+      color: #e8e8e8 !important; background: #1a1a1a !important;
+      font-family: 'IBM Plex Mono', monospace !important;
+    }
+    .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover,
+    .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus {
+      background: #2e2e2e !important;
+    }
+    .numInputWrapper:hover { background: #2e2e2e !important; }
+    .numInputWrapper span { border-color: #2e2e2e !important; }
+    .numInputWrapper span svg { fill: #666 !important; }
+    .flatpickr-prev-month, .flatpickr-next-month { fill: #e8e8e8 !important; }
+    .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #f0c040 !important; }
+  </style>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0f0f0f;
+      --surface:  #1a1a1a;
+      --border:   #2e2e2e;
+      --text:     #e8e8e8;
+      --muted:    #666;
+      --accent:   #f0c040;
+      --danger:   #e05555;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .header {
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+    }
+    .header a {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      transition: color 0.15s;
+    }
+    .header a:hover { color: var(--accent); }
+    .header h1 {
+      font-family: var(--mono);
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.45rem;
+    }
+
+    input[type="text"],
+    input[type="datetime-local"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.15s;
+      appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: var(--sans);
+    }
+
+    .error-list {
+      list-style: none;
+      margin-top: 0.4rem;
+    }
+    .error-list li {
+      font-size: 0.78rem;
+      color: var(--danger);
+      font-family: var(--mono);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.65rem 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: var(--muted); }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header">
+      <a href="{% url 'index' %}">← back to tasks</a>
+      <h1>// new_task</h1>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <ul class="error-list">
+          {% for error in field.errors %}
+          <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <div class="actions">
+        <button type="submit" class="btn-primary">create task</button>
+        <a href="{% url 'index' %}" class="btn-secondary">cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#id_due_date", {
+      enableTime: true,
+      dateFormat: "Y-m-d H:i",
+      minDate: "today",
+      time_24hr: true,
+      disableMobile: false,
+    });
+  </script>
+</body>
+</html>

@@ -49,6 +49,20 @@
       font-size: 0.8rem;
       color: var(--muted);
     }
+    .btn-add {
+      margin-left: auto;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-add:hover { opacity: 0.85; }
 
     /* ── Controls ── */
     .controls {
@@ -190,6 +204,7 @@
   <div class="header">
     <h1>// task_manager</h1>
     <span class="count">{{ tasks|length }} task{% if tasks|length != 1 %}s{% endif %}</span>
+    <a href="{% url 'addTask' %}" class="btn-add">+ new task</a>
   </div>
 
   <form method="GET" action="">
