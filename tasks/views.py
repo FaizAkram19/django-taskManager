@@ -73,4 +73,12 @@ def delete_task(request,pk):
     return redirect('index') # this is the else part, if someone directly visits the URL, that's a GET
                              # request, so don't actually delete anything and redirect back to the index.
 
+def toggle(request,pk):
+    if request.method=='POST':
+        task=get_object_or_404(Task, pk=pk)
+        task.is_completed = not task.is_completed
+        task.save()
+        return redirect('index')
+    return redirect('index')
+
 
