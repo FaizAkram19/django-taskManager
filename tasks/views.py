@@ -61,3 +61,16 @@ def edit_task(request, pk):
     context={"form":form}
     return render(request,'tasks/taskform.html', context)
 
+def delete_task(request,pk):
+    if request.method=='POST':# we had to add the POST check because
+        #if someone visits /<pk>/deleteTask/ directly in their browser, that's a GET request.
+        #Without the check, the task would be deleted just by visiting the URL — no button click needed. 
+        #The check ensures deletion only happens when a form actually submits to that URL.
+        task=get_object_or_404(Task, pk=pk)
+    
+        task.delete();
+        return redirect('index')
+    return redirect('index') # this is the else part, if someone directly visits the URL, that's a GET
+                             # request, so don't actually delete anything and redirect back to the index.
+
+

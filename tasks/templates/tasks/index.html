@@ -288,6 +288,15 @@
               style="font-family: var(--mono); font-size: 0.75rem; color: var(--accent); text-decoration: none; border: 1px solid var(--accent); padding: 0.2rem 0.6rem; border-radius: 3px;">
             edit
           </a>
+
+          <form method="POST" action="{% url 'deleteTask' task.pk %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit"
+                    onclick="return confirm('Delete this task?')"
+                    style="font-family: var(--mono); font-size: 0.75rem; color: var(--danger); background: none; border: 1px solid var(--danger); padding: 0.2rem 0.6rem; border-radius: 3px; cursor: pointer;">
+              delete
+            </button>
+          </form>
         </td>
 
       </tr>
