@@ -243,6 +243,7 @@
         <th>priority</th>
         <th>created</th>
         <th>due</th>
+        <th>actions</th>
       </tr>
     </thead>
     <tbody>
@@ -280,6 +281,13 @@
           {% if task.is_overdue and not task.is_completed %}
             <span class="overdue-label">⚠ overdue</span>
           {% endif %}
+        </td>
+
+        <td>
+          <a href="{% url 'edit' task.pk %}" 
+              style="font-family: var(--mono); font-size: 0.75rem; color: var(--accent); text-decoration: none; border: 1px solid var(--accent); padding: 0.2rem 0.6rem; border-radius: 3px;">
+            edit
+          </a>
         </td>
 
       </tr>

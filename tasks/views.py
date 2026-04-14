@@ -47,3 +47,17 @@ def add_task(request):
     
     return render(request, "tasks/taskform.html",{"form":form})
 
+def edit_task(request, pk):
+    task=get_object_or_404(Task, pk=pk)
+    if request.method=='POST':
+        form=TaskForm(request.POST,  request.FILES or None, instance=task) #added instance=task to fill the form with prexisting data(if any)
+
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+        
+    else:
+        form=TaskForm(instance=task)
+    context={"form":form}
+    return render(request,'tasks/taskform.html', context)
+
