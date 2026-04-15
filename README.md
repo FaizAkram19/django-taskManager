@@ -71,4 +71,4 @@ This project focuses on:
 
 ## Status
 
-🚀 MVP in development
+🚀 MVP developed
