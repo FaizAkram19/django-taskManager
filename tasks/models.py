@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.forms import ModelForm
 
 # Create your models here.
@@ -24,8 +25,7 @@ class Task(models.Model):
 
     @property
     def is_overdue(self):
-        from datetime import datetime
-        return self.due_date and self.due_date < datetime.now() 
+        return self.due_date < timezone.now() 
 
     def __str__(self):
         return self.title

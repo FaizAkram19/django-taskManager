@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{ task.title }} — Task Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f0f0f;
+      --surface: #1a1a1a;
+      --border:  #2e2e2e;
+      --text:    #e8e8e8;
+      --muted:   #666;
+      --accent:  #f0c040;
+      --danger:  #e05555;
+      --success: #4caf7d;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    .header {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1.25rem;
+    }
+    .header h1 {
+      font-family: var(--mono);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .btn-back {
+      margin-left: auto;
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .btn-back:hover { opacity: 0.75; }
+
+    .detail-card {
+      max-width: 720px;
+    }
+
+    .task-heading {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .task-heading.completed {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.5rem;
+    }
+    .badge-high   { background: #3a1515; color: #e07070; border: 1px solid #5a2020; }
+    .badge-medium { background: #2e2510; color: #d4a843; border: 1px solid #4a3a18; }
+    .badge-low    { background: #102820; color: #4caf7d; border: 1px solid #1a4030; }
+
+    .meta-row {
+      display: flex;
+      gap: 2.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 0.3rem; }
+    .meta-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .meta-value {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+    .meta-value.overdue { color: var(--danger); }
+    .overdue-label {
+      font-size: 0.65rem;
+      color: var(--danger);
+      margin-left: 0.4rem;
+    }
+
+    .description {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: #ccc;
+      padding: 1.25rem;
+      background: var(--surface);
+      border-left: 3px solid var(--border);
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 2rem;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .actions { display: flex; gap: 0.75rem; }
+    .btn-edit {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      padding: 0.3rem 0.8rem;
+      border-radius: 3px;
+      transition: opacity 0.15s;
+    }
+    .btn-edit:hover { opacity: 0.75; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>// task_detail</h1>
+    <a href="{% url 'index' %}" class="btn-back">← back</a>
+  </div>
+
+  <div class="detail-card">
+
+    <h2 class="task-heading {% if task.is_completed %}completed{% endif %}">{{ task.title }}</h2>
+
+    {% if task.priorityLevel.priority_idx == "1" %}
+        <span class="badge badge-high">high</span>
+    {% elif task.priorityLevel.priority_idx == "2" %}
+        <span class="badge badge-medium">medium</span>
+    {% else %}
+        <span class="badge badge-low">low</span>
+    {% endif %}
+
+    <div class="meta-row">
+      <div class="meta-item">
+        <span class="meta-label">Published</span>
+        <span class="meta-value">{{ task.pub_date|date:"d M Y, H:i" }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Due</span>
+        <span class="meta-value {% if task.is_overdue and not task.is_completed %}overdue{% endif %}">
+          {{ task.due_date|date:"d M Y, H:i" }}
+          {% if task.is_overdue and not task.is_completed %}
+            <span class="overdue-label">⚠ overdue</span>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="description">
+      {{ task.description|linebreaks }}
+    </div>
+
+    <div class="footer-row">
+      <span class="meta-label">Last updated</span>
+      <span class="meta-value">{{ task.updated_at|date:"d M Y, H:i" }}</span>
+    </div>
+
+    <div class="actions">
+      <a href="{% url 'edit' task.pk %}" class="btn-edit">edit</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

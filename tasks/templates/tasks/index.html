@@ -248,7 +248,7 @@
     </thead>
     <tbody>
       {% for task in tasks %}
-      <tr class="task-row">
+      <tr data-url="{% url 'detail' task.pk %}" onclick="window.location=this.dataset.url" style="cursor: pointer" class="task-row">
 
         <td>
           <form method="POST" action="{% url 'toggle' task.pk %}" style="display:inline;">
@@ -277,9 +277,9 @@
         </td>
 
         <td>
-          {% if task.priorityLevel.priority_idx == 1 %}
+          {% if task.priorityLevel.priority_idx == "1" %}
             <span class="badge badge-high">high</span>
-          {% elif task.priorityLevel.priority_idx == 2 %}
+          {% elif task.priorityLevel.priority_idx == "2" %}
             <span class="badge badge-medium">medium</span>
           {% else %}
             <span class="badge badge-low">low</span>

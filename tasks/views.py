@@ -81,4 +81,9 @@ def toggle(request,pk):
         return redirect('index')
     return redirect('index')
 
+def detail(request, pk):
+    task=get_object_or_404(Task, pk=pk)
+    context={"task":task}
+
+    return render(request,'tasks/detail.html', context)
 
